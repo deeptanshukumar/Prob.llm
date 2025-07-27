@@ -3,3 +3,5 @@ langchain-core
 chromadb
 sentence-transformers
 pypdfium2
+reportlab
+
