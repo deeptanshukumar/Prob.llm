@@ -1,0 +1,49 @@
+prob.llm is a low-resource RAG-based study assistant.
+
+this is going to be the plan of action
+# (Conceptual steps using LangChain/LlamaIndex)
+
+# 1. Load documents
+# from langchain_community.document_loaders import PyPDFLoader
+# loader = PyPDFLoader("your_study_material.pdf")
+# documents = loader.load()
+
+# 2. Split into chunks
+# from langchain.text_splitter import RecursiveCharacterTextSplitter
+# text_splitter = RecursiveCharacterTextSplitter(chunk_size=500, chunk_overlap=50)
+# chunks = text_splitter.split_documents(documents)
+
+# 3. Create embeddings and store in a vector database
+# from langchain_community.embeddings import SentenceTransformerEmbeddings
+# from langchain_community.vectorstores import FAISS
+
+# embeddings = SentenceTransformerEmbeddings(model_name="all-MiniLM-L6-v2")
+# vectorstore = FAISS.from_documents(chunks, embeddings)
+
+# 4. Create a retriever
+# retriever = vectorstore.as_retriever()
+
+# 5. Integrate with an LLM (e.g., a local one or an API)
+# from langchain_community.llms import Ollama # For local LLM via Ollama
+# llm = Ollama(model="llama2") # Or your chosen LLM
+
+# 6. Build the RAG chain
+# from langchain.chains import RetrievalQA
+# qa_chain = RetrievalQA.from_chain_type(llm=llm, retriever=retriever)
+
+# 7. Query the assistant
+# query = "What are the main principles of thermodynamics?"
+# response = qa_chain.invoke({"query": query})
+# print(response)
+
+ im thinking of using
+
+1. gemma3n for my llm moedel since its light and newly launched.
+
+2. i will be using chromadb for vector storage
+
+3. i also want to use paddle ocr for pdfs and other documents
+
+4. i want it to be multi modal (only pdfs, photos, word docs, ppts, *audios too but later, have a provision for it later*)
+
+5. will be using huggingface for sentence-transformers for embedding models

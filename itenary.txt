@@ -1,0 +1,1 @@
+Day 1: Project Setup (Local & GitHub) & Core Text RAG Prep
