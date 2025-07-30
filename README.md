@@ -1,16 +1,14 @@
 # 📚 Prob.llm - AI-Powered Study Assistant
 
-A powerful RAG (Retrieval Augmented Generation) study assistant that combines **BM25** and **Semantic Search** with **Reciprocal Rank Fusion (RRF)** for intelligent document analysis and question answering.
-
+A powerful low-resource RAG study assistant that answers academic questions using student-provided materials like PDFs, PPTs, DOCs, txt and Images.
+Prob.llm combines combines **BM25** and **Semantic Search** with **Reciprocal Rank Fusion (RRF)** for intelligent document analysis and question answering.
 ![Main Interface](Assets/mainview.png)
 
 ## 🌟 Features
 
-### 🔍 **Advanced Hybrid Retrieval System**
-- **BM25 Retrieval**: Keyword-based search for exact term matching
-- **Semantic Search**: Vector-based similarity search using embeddings
+### 🔍 **Hybrid Retrieval System**
+- **BM25 Retrieval & Semantic Search**: Keyword-based search for exact term matching & Vector-based similarity search using embeddings
 - **Reciprocal Rank Fusion (RRF)**: Combines both methods with equal weights (0.5/0.5)
-- **Optimized Performance**: Retrieves 10 documents from each method for faster processing
 
 ### 📄 **Multi-Format Document Support**
 - **PDF**: Using PyMuPDF for accurate text extraction
@@ -20,9 +18,8 @@ A powerful RAG (Retrieval Augmented Generation) study assistant that combines **
 - **Text**: Plain text file support
 
 ### 🤖 **LLM Integration**
-- **Ollama Integration**: Local LLM deployment with `llama3.2:1b`
-- **Nomic Embeddings**: High-quality text embeddings with `nomic-embed-text`
-- **Custom Prompting**: Structured, point-wise answer formatting
+- **Ollama Integration**: Local LLM deployment with `llama3.2:1b` & High-quality text embeddings with `nomic-embed-text`
+- **Custom Prompting**: Structured, point-wise answer formatting [prompt](prompt.txt)
 
 ### 🖥️ **User-Friendly Interface**
 - **Streamlit Web App**: Clean, intuitive interface
@@ -48,7 +45,18 @@ A powerful RAG (Retrieval Augmented Generation) study assistant that combines **
    git clone https://github.com/deeptanshukumar/Prob.llm.git
    cd Prob.llm
    ```
-
+2. **Set up a virtual environment**
+   ```bash
+   python -m venv venv
+   ```
+3. **Activate the virtual environment Windows:**
+   ```bash
+   venv/Scripts/activate
+   ```
+   **macOS/Linux:**
+   ```bash
+   source venv/bin/activate
+   ```
 2. **Install dependencies**
    ```bash
    pip install -r requirements.txt
@@ -57,8 +65,7 @@ A powerful RAG (Retrieval Augmented Generation) study assistant that combines **
 3. **Set up Ollama models**
    ```bash
    # Install the LLM model
-   ollama pull llama3.2:1b
-   
+   ollama pull llama3.2:1b   
    # Install the embedding model
    ollama pull nomic-embed-text
    ```
@@ -70,30 +77,26 @@ A powerful RAG (Retrieval Augmented Generation) study assistant that combines **
 
 5. **Open your browser** and navigate to `http://localhost:8501`
 
-## 📖 Usage
+## 📖 Usage & How It Works
 
-### 1. **Document Upload**
-- Place your study materials in the `uploaded_docs/` folder, or
-- Use the web interface to upload files directly
-- Supported formats: PDF, DOCX, PPTX, JPG, PNG, JPEG, TXT
+### Document Processing
+- Loads and processes PDFs and text documents
+- Splits content into manageable chunks with overlap
+- Generates embeddings for semantic search
+### Retrieval System
+- Implements hybrid search combining:
+- BM25 for keyword-based retrieval
+- Vector similarity for semantic search
+- Uses Reciprocal Rank Fusion (RRF) to combine results
+### Question Answering
+- Processes natural language questions
+- Retrieves relevant document chunks
+- Generates accurate, context-aware answers
 
-### 2. **Document Processing**
-- The system automatically detects and processes uploaded documents
-- Documents are chunked (1000 characters with 200 overlap) for optimal retrieval
-- Both BM25 and semantic indexes are created
+You can also see the cited sources
 
-### 3. **Ask Questions**
-- Type your questions in the chat interface
-- The system uses hybrid retrieval to find relevant information
-- Answers include source document references
+## 📂 File Structure (Overview)
 
-### 4. **View Sources**
-- Click on source documents to see the original content
-- Verify information accuracy and explore related topics
-
-## 🏗️ Architecture
-
-### **Modular Design**
 ```
 prob_llm_assistant/
 ├── core/                    # Core functionality modules
@@ -107,9 +110,9 @@ prob_llm_assistant/
 └── requirements.txt         # Dependencies
 ```
 
-### **Hybrid Retrieval Pipeline**
+### **⚒️ Retrieval Augmented Generation Pipeline**
 1. **Document Ingestion**: Multi-format parsing and text extraction
-2. **Text Processing**: Intelligent chunking with overlap
+2. **Text Processing**: chunking with overlap
 3. **Dual Indexing**: 
    - BM25 index for keyword search
    - Vector embeddings for semantic search
@@ -119,7 +122,9 @@ prob_llm_assistant/
    - Apply RRF to combine and rank results
 5. **LLM Generation**: Context-aware answer generation
 
-![System Architecture](Assets/llama.jpg)
+![System Architecture](Assets/llama.jpg)  uses **LLAMA3.2:1B** which is 1.3gb in model size
+and offers fast and intelligent answers to users' queries
+![RAG pipeline](Assets/RAGpipeline.png) Project Architecture
 
 ## ⚙️ Configuration
 
@@ -141,28 +146,9 @@ bm25_weight = 0.5      # BM25 importance weight
 semantic_weight = 0.5  # Semantic search importance weight
 ```
 
-### **Performance Optimization**
-- **Reduced retrieval count**: 10 docs per method (down from 15)
-- **Optimized chunking**: 1000 characters with 200 overlap
-- **Caching**: Streamlit caching for repeated operations
-- **Lightweight model**: Using `llama3.2:1b` for speed
-
 ## 🔧 Advanced Usage
-
 ### **Custom Prompting**
 Edit `prompt.txt` to customize the AI's response style:
-```
-You are an expert assistant. Your goal is to provide a comprehensive and accurate answer based *only* on the provided context.
-Synthesize the information from all relevant document chunks to form a cohesive answer.
-Do not add any information that is not present in the context.
-If the context does not contain the answer, state that clearly.
-Try to give the answers in a proper structured format point wise.
-
-Context:
-{context}
-
-Question: {question}
-```
 
 ### **Different LLM Models**
 For better performance, you can use different models:
@@ -179,31 +165,6 @@ ollama pull mistral:7b
 ### **Batch Document Processing**
 Place multiple documents in `uploaded_docs/` and restart the app for batch processing.
 
-## 🛠️ Development
-
-### **Project Structure**
-- **`core/`**: Modular components for easy maintenance
-- **`streamlit_app.py`**: UI layer separated from business logic
-- **`main.py`**: Orchestration and caching logic
-- **`uploaded_docs/`**: Document storage directory
-- **`chroma_data/`**: Vector database storage
-
-### **Testing**
-```bash
-# Test hybrid retrieval system
-python test_hybrid_retrieval.py
-
-# Test individual components
-python -c "from core.retrieval import get_hybrid_retriever; print('Retrieval system ready!')"
-```
-
-### **Contributing**
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
-
 ## 📊 Performance
 
 ### **Typical Response Times**
@@ -218,34 +179,6 @@ python -c "from core.retrieval import get_hybrid_retriever; print('Retrieval sys
 - **CPU**: Modern multi-core processor recommended
 - **GPU**: Optional, but improves performance if supported by Ollama
 
-## ❓ Troubleshooting
-
-### **Common Issues**
-
-1. **"Module not found" errors**
-   ```bash
-   pip install -r requirements.txt
-   ```
-
-2. **Ollama connection errors**
-   ```bash
-   # Ensure Ollama is running
-   ollama serve
-   
-   # Verify models are installed
-   ollama list
-   ```
-
-3. **PDF loading errors**
-   ```bash
-   pip install pymupdf
-   ```
-
-4. **Performance issues**
-   - Try smaller models: `phi3.5:3.8b-mini-instruct-q4_0`
-   - Reduce chunk_size to 800
-   - Use semantic-only retrieval for maximum speed
-
 ### **Error Logs**
 Check the Streamlit interface for detailed error messages and suggestions.
 
@@ -255,18 +188,17 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 🙏 Acknowledgments
 
-- **LangChain**: Framework for LLM applications
-- **Ollama**: Local LLM deployment platform
-- **ChromaDB**: Vector database for embeddings
-- **Streamlit**: Web application framework
-- **PyMuPDF**: PDF processing library
+- **[LangChain|🦜️🔗](https://www.langchain.com/)**: Framework for LLM applications, Document Loaders, 
+- **[Ollama](https://ollama.com/)**: Local LLM deployment platform
+- **[Chroma | 🦜️🔗 LangChain](https://python.langchain.com/docs/integrations/vectorstores/chroma/)**: Vector database for embeddings
+- **[Streamlit](https://streamlit.io/)**: Web application framework
+- **[Text splitters | 🦜️🔗 LangChain](https://python.langchain.com/docs/concepts/text_splitters/)
 
-## 📞 Support
+**Learnings About RAG from**
+[](https://developer.nvidia.com/blog/rag-101-demystifying-retrieval-augmented-generation-pipelines/)
+[](https://developer.nvidia.com/blog/finding-the-best-chunking-strategy-for-accurate-ai-responses/)
+[](https://weaviate.io/blog/introduction-to-rag)
 
-- **Issues**: [GitHub Issues](https://github.com/deeptanshukumar/Prob.llm/issues)
-- **Discussions**: [GitHub Discussions](https://github.com/deeptanshukumar/Prob.llm/discussions)
-- **Documentation**: Check this README for comprehensive setup and usage instructions
 
----
-
-**Made with ❤️ for students and researchers who want AI-powered document analysis**
+**The Main RAG pipeline and its functioning were made by [Deeptanshu Kumar](https://github.com/deeptanshukumar)**
+The user interface for this application was rapidly prototyped using AI assistance [Frontend](streamlit_app.py) to focus development efforts on the core RAG backend.
