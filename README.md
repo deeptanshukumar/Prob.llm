@@ -109,7 +109,7 @@ prob_llm_assistant/
 
 ![System Architecture](Assets/llama.jpg)  
 uses **LLAMA3.2:1B** which is 1.3gb in model size and offers fast and intelligent answers to users' queries
-![RAG pipeline](Assets/RAGpipeline.png) Project Architecture
+[RAG pipeline](Assets/RAGpipeline.png) Project Architecture
 
 ## ⚙️ Configuration
 
@@ -132,12 +132,12 @@ semantic_weight = 0.5  # Semantic search importance weight
 ```
 
 ## 🔧 Advanced Usage
-### **Custom Prompting**
+- **Custom Prompting**
 Edit `prompt.txt` to customize the AI's response style:
-### **Different LLM Models**
+- **Different LLM Models**
 For better performance, you can use different models:
 Just `ollama pull <model name>` and change the model name in the code file
-### **Batch Document Processing**
+- **Batch Document Processing**
 Place multiple documents in `uploaded_docs/` and restart the app for batch processing.
 
 ### **System Requirements**
