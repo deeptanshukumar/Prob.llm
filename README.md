@@ -64,7 +64,7 @@ Prob.llm combines combines **BM25** and **Semantic Search** with **Reciprocal Ra
 
 5. **Open your browser** and navigate to `http://localhost:8501`
 
-## 📖 Usage & How It Works
+## 📖 Usage & How It Works (RAG Pipeline)
 
 ### Document Processing
 - Loads and processes PDFs and text documents
@@ -95,20 +95,9 @@ prob_llm_assistant/
 └── requirements.txt         # Dependencies
 ```
 
-### **⚒️ Retrieval Augmented Generation Pipeline**
-1. **Document Ingestion**: Multi-format parsing and text extraction
-2. **Text Processing**: chunking with overlap
-3. **Dual Indexing**: 
-   - BM25 index for keyword search
-   - Vector embeddings for semantic search
-4. **Query Processing**: 
-   - Retrieve 10 documents via BM25
-   - Retrieve 10 documents via semantic search
-   - Apply RRF to combine and rank results
-5. **LLM Generation**: Context-aware answer generation
-
 ![System Architecture](Assets/llama.jpg)  
-uses **LLAMA3.2:1B** which is 1.3gb in model size and offers fast and intelligent answers to users' queries
+uses **LLAMA3.2:1B**, which is 1.3 GB in model size and offers fast and intelligent answers to users' queries
+
 [RAG pipeline](Assets/RAGpipeline.png) Project Architecture
 
 ## ⚙️ Configuration
@@ -133,7 +122,7 @@ semantic_weight = 0.5  # Semantic search importance weight
 
 ## 🔧 Advanced Usage
 - **Custom Prompting**
-Edit `prompt.txt` to customize the AI's response style:
+Edit `prompt.txt` to customise the AI's response style:
 - **Different LLM Models**
 For better performance, you can use different models:
 Just `ollama pull <model name>` and change the model name in the code file
