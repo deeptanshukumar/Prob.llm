@@ -154,4 +154,5 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 **The Main RAG pipeline and its functioning were made by [Deeptanshu Kumar](https://github.com/deeptanshukumar)**
 
 The user interface for this application was rapidly prototyped using AI assistance [Frontend](streamlit_app.py) to focus development efforts on the core RAG backend.
+
 This small project was built to learn and understand the world of RAG and llms and work with tools like LangChain!
