@@ -1,32 +1,20 @@
 # 📚 Prob.llm - AI-Powered Study Assistant
 
-A powerful low-resource RAG study assistant that answers academic questions using student-provided materials like PDFs, PPTs, DOCs, txt and Images.
+A powerful low-resource RAG study assistant that answers academic questions using student-provided materials like **PDFs, PPTs, DOCs, txt and Images.**
 Prob.llm combines combines **BM25** and **Semantic Search** with **Reciprocal Rank Fusion (RRF)** for intelligent document analysis and question answering.
 
 ![Main Interface](Assets/mainview.png)
 
 ## 🌟 Features
+- **Hybrid Retrieval System** - BM25 Retrieval & Semantic Search for both Keyword-based search for exact term matching & Vector-based similarity search using embeddings
+- **Multi-Format Document Support** - support for PDFs, PPTs, DOCs, txt and Images
 
-### 🔍 **Hybrid Retrieval System**
-- **BM25 Retrieval & Semantic Search**: Keyword-based search for exact term matching & Vector-based similarity search using embeddings
-- **Reciprocal Rank Fusion (RRF)**: Combines both methods with equal weights (0.5/0.5)
-
-### 📄 **Multi-Format Document Support**
-- **PDF**: Using PyMuPDF for accurate text extraction
-- **DOCX**: Microsoft Word document processing
-- **PPTX**: PowerPoint presentation support
-- **Images**: JPG, JPEG, PNG with OCR capabilities
-- **Text**: Plain text file support
-
-### 🤖 **LLM Integration**
+### 🤖 **Local LLM Integration**
 - **Ollama Integration**: Local LLM deployment with `llama3.2:1b` & High-quality text embeddings with `nomic-embed-text`
 - **Custom Prompting**: Structured, point-wise answer formatting [prompt](prompt.txt)
 
 ### 🖥️ **User-Friendly Interface**
-- **Streamlit Web App**: Clean, intuitive interface
-- **Real-time Chat**: Interactive Q&A with your documents
-- **Document Management**: Easy upload and ingestion
-- **Source Citations**: View source documents for answers
+Uses **Streamlit Web App**, which is a clean interface, **Document Management** for easy upload and ingestion & **Source Citations** to view source documents for answers
 
 ![Sources View](Assets/sources.png)
 
@@ -94,8 +82,6 @@ Prob.llm combines combines **BM25** and **Semantic Search** with **Reciprocal Ra
 - Retrieves relevant document chunks
 - Generates accurate, context-aware answers
 
-You can also see the cited sources
-
 ## 📂 File Structure (Overview)
 
 ```
@@ -123,8 +109,8 @@ prob_llm_assistant/
    - Apply RRF to combine and rank results
 5. **LLM Generation**: Context-aware answer generation
 
-![System Architecture](Assets/llama.jpg)  uses **LLAMA3.2:1B** which is 1.3gb in model size
-and offers fast and intelligent answers to users' queries
+![System Architecture](Assets/llama.jpg)  
+uses **LLAMA3.2:1B** which is 1.3gb in model size and offers fast and intelligent answers to users' queries
 ![RAG pipeline](Assets/RAGpipeline.png) Project Architecture
 
 ## ⚙️ Configuration
@@ -150,11 +136,9 @@ semantic_weight = 0.5  # Semantic search importance weight
 ## 🔧 Advanced Usage
 ### **Custom Prompting**
 Edit `prompt.txt` to customize the AI's response style:
-
 ### **Different LLM Models**
 For better performance, you can use different models:
 Just `ollama pull <model name>` and change the model name in the code file
-
 ### **Batch Document Processing**
 Place multiple documents in `uploaded_docs/` and restart the app for batch processing.
 
@@ -164,11 +148,7 @@ Place multiple documents in `uploaded_docs/` and restart the app for batch proce
 - **CPU**: Modern multi-core processor recommended
 - **GPU**: Optional, but improves performance if supported by Ollama
 
-### **Error Logs**
-Check the Streamlit interface for detailed error messages and suggestions.
-
 ## 📄 License
-
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 ## 🙏 Acknowledgments
@@ -178,11 +158,11 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - **[Chroma | 🦜️🔗 LangChain](https://python.langchain.com/docs/integrations/vectorstores/chroma/)**: Vector database for embeddings
 - **[Streamlit](https://streamlit.io/)**: Web application framework
 - **[Text splitters | 🦜️🔗 LangChain](https://python.langchain.com/docs/concepts/text_splitters/)**
-
 **Learnings About RAG from**
 - [Nvidia RAG 101](https://developer.nvidia.com/blog/rag-101-demystifying-retrieval-augmented-generation-pipelines/)
 - [Nvidia Best Chunking Strategy](https://developer.nvidia.com/blog/finding-the-best-chunking-strategy-for-accurate-ai-responses/)
 - [Introduction to RAG](https://weaviate.io/blog/introduction-to-rag)
+  
 
 **The Main RAG pipeline and its functioning were made by [Deeptanshu Kumar](https://github.com/deeptanshukumar)**
 
