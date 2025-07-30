@@ -2,6 +2,7 @@
 
 A powerful low-resource RAG study assistant that answers academic questions using student-provided materials like PDFs, PPTs, DOCs, txt and Images.
 Prob.llm combines combines **BM25** and **Semantic Search** with **Reciprocal Rank Fusion (RRF)** for intelligent document analysis and question answering.
+
 ![Main Interface](Assets/mainview.png)
 
 ## 🌟 Features
@@ -152,26 +153,10 @@ Edit `prompt.txt` to customize the AI's response style:
 
 ### **Different LLM Models**
 For better performance, you can use different models:
-```bash
-# Faster, smaller models
-ollama pull phi3.5:3.8b-mini-instruct-q4_0
-ollama pull gemma2:2b-instruct-q4_0
-
-# More capable models
-ollama pull llama3.1:8b
-ollama pull mistral:7b
-```
+Just `ollama pull <model name>` and change the model name in the code file
 
 ### **Batch Document Processing**
 Place multiple documents in `uploaded_docs/` and restart the app for batch processing.
-
-## 📊 Performance
-
-### **Typical Response Times**
-- **Document Loading**: 2-5 seconds (one-time)
-- **First Query**: 3-8 seconds (model loading)
-- **Subsequent Queries**: 1-2 seconds
-- **Document Ingestion**: ~1 second per page
 
 ### **System Requirements**
 - **RAM**: 4GB minimum, 8GB recommended
@@ -192,13 +177,14 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - **[Ollama](https://ollama.com/)**: Local LLM deployment platform
 - **[Chroma | 🦜️🔗 LangChain](https://python.langchain.com/docs/integrations/vectorstores/chroma/)**: Vector database for embeddings
 - **[Streamlit](https://streamlit.io/)**: Web application framework
-- **[Text splitters | 🦜️🔗 LangChain](https://python.langchain.com/docs/concepts/text_splitters/)
+- **[Text splitters | 🦜️🔗 LangChain]**(https://python.langchain.com/docs/concepts/text_splitters/)
 
 **Learnings About RAG from**
-[](https://developer.nvidia.com/blog/rag-101-demystifying-retrieval-augmented-generation-pipelines/)
-[](https://developer.nvidia.com/blog/finding-the-best-chunking-strategy-for-accurate-ai-responses/)
-[](https://weaviate.io/blog/introduction-to-rag)
+[Nvidia RAG 101](https://developer.nvidia.com/blog/rag-101-demystifying-retrieval-augmented-generation-pipelines/)
+[Nvidia Best Chunking Strategy](https://developer.nvidia.com/blog/finding-the-best-chunking-strategy-for-accurate-ai-responses/)
+[Introduction to RAG](https://weaviate.io/blog/introduction-to-rag)
 
 
 **The Main RAG pipeline and its functioning were made by [Deeptanshu Kumar](https://github.com/deeptanshukumar)**
+
 The user interface for this application was rapidly prototyped using AI assistance [Frontend](streamlit_app.py) to focus development efforts on the core RAG backend.
