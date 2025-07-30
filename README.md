@@ -80,6 +80,11 @@ Prob.llm combines combines **BM25** and **Semantic Search** with **Reciprocal Ra
 - Retrieves relevant document chunks
 - Generates accurate, context-aware answers
 
+![System Architecture](Assets/llama.jpg)  
+uses **LLAMA3.2:1B**, which is 1.3 GB in model size and offers fast and intelligent answers to users' queries
+
+[RAG pipeline](Assets/RAGpipeline.png) Project Architecture
+
 ## 📂 File Structure (Overview)
 
 ```
@@ -94,11 +99,6 @@ prob_llm_assistant/
 ├── main.py                  # Core orchestration logic
 └── requirements.txt         # Dependencies
 ```
-
-![System Architecture](Assets/llama.jpg)  
-uses **LLAMA3.2:1B**, which is 1.3 GB in model size and offers fast and intelligent answers to users' queries
-
-[RAG pipeline](Assets/RAGpipeline.png) Project Architecture
 
 ## ⚙️ Configuration
 
