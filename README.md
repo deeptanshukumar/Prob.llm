@@ -8,13 +8,11 @@ Prob.llm combines combines **BM25** and **Semantic Search** with **Reciprocal Ra
 ## 🌟 Features
 - **Hybrid Retrieval System** - BM25 Retrieval & Semantic Search for both Keyword-based search for exact term matching & Vector-based similarity search using embeddings
 - **Multi-Format Document Support** - support for PDFs, PPTs, DOCs, txt and Images
-
-### 🤖 **Local LLM Integration**
-- **Ollama Integration**: Local LLM deployment with `llama3.2:1b` & High-quality text embeddings with `nomic-embed-text`
-- **Custom Prompting**: Structured, point-wise answer formatting [prompt](prompt.txt)
-
-### 🖥️ **User-Friendly Interface**
-Uses **Streamlit Web App**, which is a clean interface, **Document Management** for easy upload and ingestion & **Source Citations** to view source documents for answers
+- **Local LLM Integration**
+   - **Ollama Integration**: Local LLM deployment with `llama3.2:1b` & High-quality text embeddings with `nomic-embed-text`
+   - **Custom Prompting**: Structured, point-wise answer formatting [prompt](prompt.txt)
+- **User-Friendly Interface**
+      Uses **Streamlit Web App**, which is a clean interface, **Document Management** for easy upload and ingestion & **Source Citations** to view source documents for answers
 
 ![Sources View](Assets/sources.png)
 
