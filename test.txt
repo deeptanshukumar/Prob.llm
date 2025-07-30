@@ -1,0 +1,285 @@
+import os
+import chromadb
+from langchain_community.document_loaders import PyMuPDFLoader
+from langchain.text_splitter import RecursiveCharacterTextSplitter
+from langchain_core.documents import Document
+# REMOVED: from langchain_community.embeddings import SentenceTransformerEmbeddings
+from langchain_community.embeddings import OllamaEmbeddings # NEW IMPORT: Using Ollama for embeddings
+from langchain_community.vectorstores import Chroma
+from langchain_community.retrievers import BM25Retriever
+from langchain.retrievers import EnsembleRetriever
+from langchain_community.llms import Ollama
+from langchain.chains import RetrievalQA
+from langchain_core.prompts import PromptTemplate
+from typing import List, Dict, Any
+
+# NEW IMPORTS for Word, Image processing and OCR
+import docx # For .docx files
+from PIL import Image # For image manipulation (Pillow)
+from paddleocr import PaddleOCR # For OCR
+import cv2 # OpenCV, often a dependency for PaddleOCR
+import numpy as np # Numerical operations, often a dependency
+from reportlab.lib.pagesizes import letter # For dummy PDF
+from reportlab.pdfgen import canvas # For dummy PDF
+from PIL import ImageDraw, ImageFont # For dummy Image
+
+# --- Configuration ---
+UPLOAD_DIR = "./uploaded_docs"
+CHROMA_DB_DIR = "./chroma_data"
+# UPDATED: Embedding model name for OllamaEmbeddings
+EMBEDDING_MODEL_NAME = "nomic-embed-text" 
+LLM_MODEL_NAME = "llama3.2:1b"
+TEMP_IMAGE_DIR = "./temp_images"
+
+# Initialize PaddleOCR globally (it downloads models on first run)
+# Corrected: Simplified initialization to avoid unsupported arguments
+OCR_ENGINE = PaddleOCR(lang='en') 
+
+def load_pdf_document(file_path: str) -> List[Document]:
+    """
+    Loads a PDF document and extracts its text content.
+    Returns a list of LangChain Document objects.
+    """
+    print(f"Loading PDF: {file_path}")
+    loader = PyMuPDFLoader(file_path)
+    documents = loader.load()
+    print(f"Loaded {len(documents)} pages from PDF.")
+    return documents
+
+def process_docx_document(file_path: str) -> List[Document]:
+    """
+    Extracts text and images from a .docx file and converts them to LangChain Documents.
+    """
+    print(f"Processing DOCX: {file_path}")
+    doc = docx.Document(file_path)
+    documents = []
+    
+    full_text = []
+    for para in doc.paragraphs:
+        full_text.append(para.text)
+    
+    if full_text:
+        doc_content = "\n".join(full_text)
+        documents.append(Document(page_content=doc_content, metadata={"source": os.path.basename(file_path), "type": "text"}))
+
+    print(f"Extracted text from DOCX: {os.path.basename(file_path)}")
+    return documents
+
+def process_image_document(file_path: str) -> List[Document]:
+    """
+    Loads a standalone image, performs OCR using PaddleOCR, and returns the extracted text as a Document.
+    """
+    print(f"Processing Image: {file_path}")
+    
+    try:
+        # Corrected: Removed 'cls=True' from ocr() call as it's deprecated/not supported directly
+        result = OCR_ENGINE.ocr(file_path) 
+        
+        extracted_text = []
+        if result and result[0]: 
+            for line_info in result[0]:
+                extracted_text.append(line_info[1][0])
+        
+        if extracted_text:
+            content = "\n".join(extracted_text)
+            print(f"OCR'd text from image {os.path.basename(file_path)}: {content[:100]}...")
+            return [Document(page_content=content, metadata={"source": os.path.basename(file_path), "type": "image_ocr"})]
+        else:
+            print(f"No text found in image: {os.path.basename(file_path)}")
+            return []
+    except Exception as e:
+        print(f"Error processing image {file_path}: {e}")
+        return []
+
+def initialize_chroma_db():
+    """
+    Initializes the ChromaDB client and collection.
+    If the collection doesn't exist, it will be created.
+    """
+    print("Initializing ChromaDB...")
+    client = chromadb.PersistentClient(path=CHROMA_DB_DIR)
+    # UPDATED: Use OllamaEmbeddings instead of SentenceTransformerEmbeddings
+    embeddings = OllamaEmbeddings(model=EMBEDDING_MODEL_NAME) 
+    vectorstore = Chroma(
+        client=client,
+        collection_name="prob_lm_documents",
+        embedding_function=embeddings,
+    )
+    print("ChromaDB initialized.")
+    return vectorstore
+
+def setup_rag_chain(vectorstore: Chroma, text_chunks: List[Document]):
+    """
+    Sets up the RAG (Retrieval Augmented Generation) chain
+    including BM25, Semantic, Hybrid (RRF), and LLM integration.
+    """
+    print("\n--- Setting up RAG Chain ---")
+
+    bm25_retriever = BM25Retriever.from_documents(
+        text_chunks,
+        k=5 
+    )
+    print("BM25 Retriever initialized.")
+
+    semantic_retriever = vectorstore.as_retriever(search_kwargs={"k": 5}) 
+    print("Semantic Search Retriever initialized.")
+
+    hybrid_retriever = EnsembleRetriever(
+        retrievers=[bm25_retriever, semantic_retriever],
+        weights=[0.5, 0.5], 
+    )
+    print("Hybrid Retriever (BM25 + Semantic Search with RRF) initialized.")
+
+    llm = Ollama(model=LLM_MODEL_NAME)
+    print(f"LLM '{LLM_MODEL_NAME}' initialized.")
+
+    prompt_template = """Use the following pieces of context to answer the question at the end.
+If you don't know the answer, just say that you don't know, don't try to make up an answer.
+Keep the answer as concise as possible.
+
+Context:
+{context}
+
+Question: {question}
+
+Helpful Answer:"""
+    PROMPT = PromptTemplate(
+        template=prompt_template, input_variables=["context", "question"]
+    )
+
+    qa_chain = RetrievalQA.from_chain_type(
+        llm=llm,
+        chain_type="stuff",
+        retriever=hybrid_retriever,
+        return_source_documents=True,
+        chain_type_kwargs={"prompt": PROMPT},
+    )
+    print("RAG chain setup complete.")
+    return qa_chain
+
+def main():
+    """
+    Main function to run the ingestion and query process.
+    """
+    os.makedirs(UPLOAD_DIR, exist_ok=True)
+    os.makedirs(CHROMA_DB_DIR, exist_ok=True)
+    os.makedirs(TEMP_IMAGE_DIR, exist_ok=True) 
+
+    # --- Ingestion Process ---
+    all_loaded_documents: List[Document] = [] 
+
+    # 1. Process PDF (Existing Logic)
+    sample_pdf_path = os.path.join(UPLOAD_DIR, "sample.pdf")
+    if not os.path.exists(sample_pdf_path):
+        print(f"Creating a dummy PDF for testing at {sample_pdf_path}...")
+        c = canvas.Canvas(sample_pdf_path, pagesize=letter)
+        c.drawString(100, 750, "This is a sample document for testing the RAG system.")
+        c.drawString(100, 730, "It contains some basic information about RAG and LLMs.")
+        c.drawString(100, 710, "Retrieval Augmented Generation (RAG) is an AI framework that combines")
+        c.drawString(100, 690, "retrieval mechanisms with generative models to produce more accurate and")
+        c.drawString(100, 670, "contextually relevant outputs.")
+        c.drawString(100, 650, "Large Language Models (LLMs) like TinyLlama are powerful but can hallucinate.")
+        c.drawString(100, 630, "RAG helps by providing external knowledge as context.")
+        c.save()
+        print("Dummy PDF created.")
+    all_loaded_documents.extend(load_pdf_document(sample_pdf_path))
+
+    # NEW: 2. Process a Dummy Word Document
+    sample_docx_path = os.path.join(UPLOAD_DIR, "sample.docx")
+    if not os.path.exists(sample_docx_path):
+        print(f"Creating a dummy DOCX for testing at {sample_docx_path}...")
+        new_doc = docx.Document()
+        new_doc.add_heading('Sample Word Document', level=1)
+        new_doc.add_paragraph('This is a sample Word document for testing the RAG system.')
+        new_doc.add_paragraph('It contains information about document processing and RAG.')
+        new_doc.add_paragraph('Word documents are common study materials.')
+        new_doc.save(sample_docx_path)
+        print("Dummy DOCX created.")
+    all_loaded_documents.extend(process_docx_document(sample_docx_path))
+
+    # NEW: 3. Process a Dummy Image File
+    sample_image_path = os.path.join(UPLOAD_DIR, "sample_image.png")
+    if not os.path.exists(sample_image_path):
+        print(f"Creating a dummy Image for testing at {sample_image_path}...")
+        img = Image.new('RGB', (400, 100), color = (255, 255, 255))
+        d = ImageDraw.Draw(img)
+        try:
+            fnt = ImageFont.truetype("arial.ttf", 20) 
+        except IOError:
+            try:
+                fnt = ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf", 20) 
+            except IOError:
+                fnt = ImageFont.load_default() 
+        
+        d.text((10,10), "OCR Test: Important Text Here!", fill=(0,0,0), font=fnt)
+        d.text((10,40), "RAG systems are powerful.", fill=(0,0,0), font=fnt)
+        img.save(sample_image_path)
+        print("Dummy Image created.")
+    all_loaded_documents.extend(process_image_document(sample_image_path))
+
+
+    # --- Chunking and Embedding (now using all_loaded_documents) ---
+    text_chunks = []
+    if all_loaded_documents: 
+        print("\n--- Starting Chunking ---")
+        text_splitter = RecursiveCharacterTextSplitter(
+            chunk_size=1000,
+            chunk_overlap=200,
+            length_function=len,
+            add_start_index=True,
+        )
+        text_chunks = text_splitter.split_documents(all_loaded_documents)
+        
+        print(f"Split into {len(text_chunks)} total chunks from all documents.")
+        print("\nFirst chunk content snippet (from app.py):")
+        print(text_chunks[0].page_content[:300] + "...")
+        print("\nFirst chunk metadata:")
+        print(text_chunks[0].metadata)
+    else:
+        print("No documents were loaded from any source, skipping chunking.")
+
+    print("\n--- Initializing ChromaDB and Adding Chunks ---")
+    vectorstore = initialize_chroma_db()
+
+    if text_chunks:
+        for i, chunk in enumerate(text_chunks):
+            if "source" not in chunk.metadata:
+                chunk.metadata["source"] = "unknown_source_file" 
+            chunk.metadata["chunk_id"] = i
+        
+        vectorstore.add_documents(text_chunks)
+        print(f"Successfully added {len(text_chunks)} chunks to ChromaDB.")
+        print(f"ChromaDB data stored in: {CHROMA_DB_DIR}")
+    else:
+        print("No text chunks to add to ChromaDB.")
+
+    # Setup the full RAG chain
+    qa_chain = setup_rag_chain(vectorstore, text_chunks)
+
+    # --- Interactive Query Loop (CLI) ---
+    print("\n--- RAG System Ready ---")
+    print("You can now ask questions based on the ingested document content.")
+    print(f"Using LLM: {LLM_MODEL_NAME}")
+    print("Type 'exit' to quit.")
+
+    while True:
+        query = input("\nYour Question: ")
+        if query.lower() == 'exit':
+            break
+        
+        try:
+            response = qa_chain.invoke({"query": query})
+            
+            print("\nAnswer:", response["result"])
+            print("\nSources:")
+            if response["source_documents"]:
+                for doc in response["source_documents"]:
+                    print(f"- Source: {doc.metadata.get('source', 'N/A')}, Page: {doc.metadata.get('page', 'N/A')}, Type: {doc.metadata.get('type', 'N/A')}, Chunk ID: {doc.metadata.get('chunk_id', 'N/A')}")
+            else:
+                print("No source documents found for this query.")
+        except Exception as e:
+            print(f"An error occurred: {e}")
+            print("Please ensure your Ollama server is running and the Llama 3.2:1b model is available.")
+
+if __name__ == "__main__":
+    main()

@@ -4,7 +4,7 @@ This project aims to build a study assistant leveraging Retrieval Augmented Gene
 
 ## Features (Planned)
 - Ingestion and querying of text from PDFs, Word documents, PowerPoint presentations, and standalone images (via OCR).
-- Uses tinyllama as the local LLM and ChromaDB for vector storage.
+- Uses gemma3:1b-it-q4_K_M as the local LLM and ChromaDB for vector storage.
 - User-friendly local web application interface (Streamlit/Gradio).
 
 ## Setup
