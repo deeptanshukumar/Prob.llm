@@ -1,7 +1,9 @@
 prob_lm_assistant/
-├── main.py                     # Main entry point, orchestrates the application
+├── streamlit_app.py            # Streamlit UI entry point
+├── main.py                     # Main orchestration module with cached functions  
+├── app.py                      # Legacy app file (can be removed)
 ├── requirements.txt            # All Python dependencies
-├── uploaded_docs/              # Folder for user-uploaded documents (and dummy files)
+├── uploaded_docs/              # Folder for user-uploaded documents
 ├── chroma_data/                # Persistent storage for ChromaDB
 ├── temp_images/                # Temporary storage for extracted images
 └── core/                       # Contains core logic modules
@@ -13,9 +15,3 @@ prob_lm_assistant/
     └── llm_interface.py        # Functions for LLM interaction and RAG chain setup
 
 
-Loading PDFs, Word documents, and standalone images (with OCR).
-Chunking all this content.
-Embedding it using nomic-embed-text via Ollama.
-Storing it in ChromaDB.
-Performing Hybrid Search (BM25 + Semantic Search with RRF).
-And using your local Llama 3.2:1b LLM (via Ollama) to generate accurate, grounded, and more conversational answers based on the retrieved context.

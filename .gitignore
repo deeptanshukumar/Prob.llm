@@ -18,3 +18,4 @@ chroma_data/
 
 # Ollama temporary files / logs (if any end up here)
 *.log
+
