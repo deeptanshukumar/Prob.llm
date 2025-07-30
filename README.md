@@ -125,7 +125,7 @@ prob_llm_assistant/
 
 ![System Architecture](Assets/llama.jpg)  uses **LLAMA3.2:1B** which is 1.3gb in model size
 and offers fast and intelligent answers to users' queries
-![RAG pipeline](Assets/RAGpipeline.png | | width=500) Project Architecture
+![RAG pipeline](Assets/RAGpipeline.png | width=500) Project Architecture
 
 ## ⚙️ Configuration
 
