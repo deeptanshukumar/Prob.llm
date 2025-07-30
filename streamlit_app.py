@@ -1,8 +1,8 @@
 """
 Streamlit application for the Prob.lm Study Assistant.
 This is the main UI entry point that uses the core functionality from main.py.
+This frontend is mainly AI generated
 """
-
 import streamlit as st
 import os
 import shutil
@@ -20,8 +20,8 @@ from main import (
 )
 
 # --- Streamlit UI Configuration ---
-st.set_page_config(page_title="Prob.lm Study Assistant", layout="wide")
-st.title("📚 Prob.lm Study Assistant")
+st.set_page_config(page_title="Prob.llm Study Assistant", layout="wide")
+st.title("📚 Prob.llm Study Assistant")
 
 # --- Initialize Session State ---
 if "rag_chain" not in st.session_state:

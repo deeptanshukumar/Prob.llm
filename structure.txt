@@ -1,7 +1,6 @@
 prob_lm_assistant/
 ├── streamlit_app.py            # Streamlit UI entry point
 ├── main.py                     # Main orchestration module with cached functions  
-├── app.py                      # Legacy app file (can be removed)
 ├── requirements.txt            # All Python dependencies
 ├── uploaded_docs/              # Folder for user-uploaded documents
 ├── chroma_data/                # Persistent storage for ChromaDB
@@ -13,5 +12,3 @@ prob_lm_assistant/
     ├── vector_store.py         # Functions for ChromaDB initialization and management
     ├── retrieval.py            # Functions for BM25, Semantic, Hybrid retrieval
     └── llm_interface.py        # Functions for LLM interaction and RAG chain setup
-
-
