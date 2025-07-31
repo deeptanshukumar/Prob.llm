@@ -64,7 +64,7 @@ Prob.llm combines **BM25** and **Semantic Search** with **Reciprocal Rank Fusion
 
 5. **Open your browser** and navigate to `http://localhost:8501`
 
-## 📖 Usage & How It Works (RAG Pipeline)
+## Usage & How It Works (RAG Pipeline)
 
 ### Document Processing
 - Loads and processes PDFs and text documents
@@ -135,10 +135,10 @@ Place multiple documents in `uploaded_docs/` and restart the app for batch proce
 - **CPU**: Modern multi-core processor recommended
 - **GPU**: Optional, but improves performance if supported by Ollama
 
-## 📄 License
+## License
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-## 🙏 Acknowledgments
+## Acknowledgments
 
 - **[LangChain|🦜️🔗](https://www.langchain.com/)**: Framework for LLM applications, Document Loaders, 
 - **[Ollama](https://ollama.com/)**: Local LLM deployment platform
