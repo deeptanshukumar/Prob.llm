@@ -145,6 +145,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - **[Chroma | 🦜️🔗 LangChain](https://python.langchain.com/docs/integrations/vectorstores/chroma/)**: Vector database for embeddings
 - **[Streamlit](https://streamlit.io/)**: Web application framework
 - **[Text splitters | 🦜️🔗 LangChain](https://python.langchain.com/docs/concepts/text_splitters/)**
+
 **Learnings About RAG from**
 - [Nvidia RAG 101](https://developer.nvidia.com/blog/rag-101-demystifying-retrieval-augmented-generation-pipelines/)
 - [Nvidia Best Chunking Strategy](https://developer.nvidia.com/blog/finding-the-best-chunking-strategy-for-accurate-ai-responses/)
