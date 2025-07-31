@@ -1,11 +1,11 @@
 # 📚 Prob.llm - AI-Powered Study Assistant
 
 A powerful low-resource RAG study assistant that answers academic questions using student-provided materials like **PDFs, PPTs, DOCs, txt and Images.**
-Prob.llm combines combines **BM25** and **Semantic Search** with **Reciprocal Rank Fusion (RRF)** for intelligent document analysis and question answering.
+Prob.llm combines **BM25** and **Semantic Search** with **Reciprocal Rank Fusion (RRF)** for intelligent document analysis and question answering.
 
 ![Main Interface](Assets/mainview.png)
 
-## 🌟 Features
+## Features
 - **Hybrid Retrieval System** - BM25 Retrieval & Semantic Search for both Keyword-based search for exact term matching & Vector-based similarity search using embeddings
 - **Multi-Format Document Support** - support for PDFs, PPTs, DOCs, txt and Images
 - **Local LLM Integration**
@@ -16,7 +16,7 @@ Prob.llm combines combines **BM25** and **Semantic Search** with **Reciprocal Ra
 
 ![Sources View](Assets/sources.png)
 
-## 🚀 Quick Start
+## Quick Start
 
 ### Prerequisites
 
@@ -100,7 +100,7 @@ prob_llm_assistant/
 └── requirements.txt         # Dependencies
 ```
 
-## ⚙️ Configuration
+## Configuration
 
 ### **Model Configuration** (in `main.py`)
 ```python
@@ -120,7 +120,7 @@ bm25_weight = 0.5      # BM25 importance weight
 semantic_weight = 0.5  # Semantic search importance weight
 ```
 
-## 🔧 Advanced Usage
+## Advanced Usage
 - **Custom Prompting**
 Edit `prompt.txt` to customise the AI's response style:
 - **Different LLM Models**
